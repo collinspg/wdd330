@@ -38,13 +38,17 @@ export default class ProductDetails {
             .getElementById("addToCart")
             .addEventListener("click", () => this.addProductToCart(this.product));
     }
-
+// this part is differnt from the main driver
     addProductToCart(product) {
         let cartItems = getLocalStorage("so-cart");
+        // ensures that carItems is always an array
         if (!Array.isArray(cartItems)) {
             cartItems = [];
         }
+        // add product to the array
         cartItems.push(product);
+
+        //Saves the updated cart back to local storage 
         setLocalStorage("so-cart", cartItems);
     }
 

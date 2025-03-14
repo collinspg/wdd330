@@ -21,6 +21,7 @@ export function setClick(selector, callback) {
   });
   qs(selector).addEventListener("click", callback);
 }
+//driver thas this before the export function setclick
 // New function: Retrieve URL parameters
 export function getParam(param) {
   const queryString = window.location.search;
