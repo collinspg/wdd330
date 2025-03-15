@@ -7,8 +7,6 @@ function renderCartContents() {
 }
 
 function cartItemTemplate(item) {
-   console.log(item);
-   console.table(item);
   const colorName = item.Colors?.[0]?.ColorName || "No Color";
   const newItem = `<li class="cart-card divider">
   <a href="#" class="cart-card__image">
