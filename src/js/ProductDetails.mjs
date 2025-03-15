@@ -1,5 +1,5 @@
-import { setLocalStorage } from "./utils.mjs";
-
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+ 
 function productDetailsTemplate(product) {
   return `<section class="product-detail"> <h3>${product.Brand.Name}</h3>
     <h2 class="divider">${product.NameWithoutBrand}</h2>
@@ -17,7 +17,7 @@ function productDetailsTemplate(product) {
       <button id="addToCart" data-id="${product.Id}">Add to Cart</button>
     </div></section>`;
 }
-
+ 
 export default class ProductDetails {
   constructor(productId, dataSource) {
     this.productId = productId;
@@ -35,9 +35,29 @@ export default class ProductDetails {
       .getElementById("addToCart")
       .addEventListener("click", this.addToCart.bind(this));
   }
+ 
   addToCart() {
-    setLocalStorage("so-cart", this.product);
+    // Get current cart items
+    let cartItems = getLocalStorage("so-cart");
+   
+    // If cartItems is not an array, convert it to one
+    if (!Array.isArray(cartItems)) {
+      // If there's a single item, put it in an array
+      if (cartItems && typeof cartItems === "object") {
+        cartItems = [cartItems];
+      } else {
+        // If there's nothing, initialize empty array
+        cartItems = [];
+      }
+    }
+   
+    // Add the new product to the array
+    cartItems.push(this.product);
+   
+    // Save back to localStorage
+    setLocalStorage("so-cart", cartItems);
   }
+ 
   renderProductDetails(selector) {
     const element = document.querySelector(selector);
     element.insertAdjacentHTML(
