@@ -1,8 +1,9 @@
 import { setLocalStorage } from "./utils.mjs";
 
 function productDetailsTemplate(product) {
-  return `<section class="product-detail"> <h3>${product.Brand.Name}</h3>
-    <h2 class="divider">${product.NameWithoutBrand}</h2>
+  return `<section class="product-detail">
+   <h3>${product.Brand.Name}</h3>
+   <h2 class="divider">${product.NameWithoutBrand}</h2>
     <img
       class="divider"
       src="${product.Image}"
@@ -31,18 +32,35 @@ export default class ProductDetails {
     this.renderProductDetails("main");
     // once the HTML is rendered we can add a listener to Add to Cart button
     // Notice the .bind(this). Our callback will not work if we don't include that line. Review the readings from this week on 'this' to understand why.
-    document
-      .getElementById("addToCart")
-      .addEventListener("click", this.addToCart.bind(this));
+     // Wait until the product is rendered and then attach the event listener
+     this.attachAddToCartListener();
+    // document
+    //   .getElementById("addToCart")
+    //   .addEventListener("click", this.addToCart.bind(this));
   }
+  attachAddToCartListener() {
+    const addToCartButton = document.getElementById("addToCart");
+    if (addToCartButton) {
+      addToCartButton.addEventListener("click", this.addToCart.bind(this));
+    }
+  }
+
   addToCart() {
-    setLocalStorage("so-cart", this.product);
-  }
+    // setLocalStorage("so-cart", this.product);
+ // Fetch cart from localStorage
+  const cartItems = JSON.parse(localStorage.getItem("so-cart")) || [];
+
+ // Add product to the cart array
+  cartItems.push(this.product);
+
+ // Save updated cart back to localStorage
+  localStorage.setItem("so-cart", JSON.stringify(cartItems));
+
+  alert(`${this.product.Name} has been added to your cart!`);
+}
   renderProductDetails(selector) {
     const element = document.querySelector(selector);
-    element.insertAdjacentHTML(
-      "afterBegin",
-      productDetailsTemplate(this.product)
-    );
+    element.insertAdjacentHTML("afterBegin", productDetailsTemplate(this.product));
+    
   }
 }
