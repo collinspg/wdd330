@@ -1,45 +1,59 @@
-// Wrapper for querySelector...returns matching element
+// wrapper for querySelector...returns matching element
 export function qs(selector, parent = document) {
   return parent.querySelector(selector);
 }
+// or a more concise version if you are into that sort of thing:
+// export const qs = (selector, parent = document) => parent.querySelector(selector);
 
-// Retrieve data from localStorage
+// retrieve data from localstorage
+// export function getLocalStorage(key) {
+//   return JSON.parse(localStorage.getItem(key));
+// }
+
+// retrieve data from localstorage
 export function getLocalStorage(key) {
-  return JSON.parse(localStorage.getItem(key));
+  const data = localStorage.getItem(key);
+  if (data === null) {
+    return null;
+  }
+  return JSON.parse(data);
 }
 
-// Save data to localStorage
+// save data to local storage
 export function setLocalStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
 
-// Set a listener for both touchend and click
-export function setClick(selector, callback) {
-  const element = qs(selector);
-  if (element) {
-    element.addEventListener("touchend", (event) => {
-      event.preventDefault();
-      callback();
-    });
-    element.addEventListener("click", callback);
-  }
-}
-
-// Helper to get parameter from the query string
+// helper to get parameter strings
 export function getParam(param) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  return urlParams.get(param);
+  const product = urlParams.get(param);
+  return product;
 }
 
-// Reusable function to render lists with a template
-export function renderListWithTemplate(templateFn, parentElement, list, position = "afterbegin", clear = false) {
-  if (!parentElement) return; // Ensure the parentElement exists
+// function to take a list of objects and a template and insert the objects as HTML into the DOM
 
+export function renderListWithTemplate(
+  templateFn,
+  parentElement,
+  list,
+  position = "afterbegin",
+  clear = false
+) {
+  const htmlStrings = list.map(templateFn);
+  // if clear is true we need to clear out the contents of the parent.
   if (clear) {
-    parentElement.innerHTML = ""; // Clear content if `clear` is true
+    parentElement.innerHTML = "";
   }
+  parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+}
 
-  const htmlStrings = list.map(templateFn).join(""); // Generate HTML from template function
-  parentElement.insertAdjacentHTML(position, htmlStrings); // Insert HTML at the specified position
+// set a listener for both touchend and click
+export function setClick(selector, callback) {
+  qs(selector).addEventListener("touchend", (event) => {
+    event.preventDefault();
+    callback();
+  });
+  qs(selector).addEventListener("click", callback);
 }

@@ -1,9 +1,8 @@
-import { setLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 function productDetailsTemplate(product) {
-  return `<section class="product-detail">
-   <h3>${product.Brand.Name}</h3>
-   <h2 class="divider">${product.NameWithoutBrand}</h2>
+  return `<section class="product-detail"> <h3>${product.Brand.Name}</h3>
+    <h2 class="divider">${product.NameWithoutBrand}</h2>
     <img
       class="divider"
       src="${product.Image}"
@@ -32,35 +31,38 @@ export default class ProductDetails {
     this.renderProductDetails("main");
     // once the HTML is rendered we can add a listener to Add to Cart button
     // Notice the .bind(this). Our callback will not work if we don't include that line. Review the readings from this week on 'this' to understand why.
-     // Wait until the product is rendered and then attach the event listener
-     this.attachAddToCartListener();
-    // document
-    //   .getElementById("addToCart")
-    //   .addEventListener("click", this.addToCart.bind(this));
-  }
-  attachAddToCartListener() {
-    const addToCartButton = document.getElementById("addToCart");
-    if (addToCartButton) {
-      addToCartButton.addEventListener("click", this.addToCart.bind(this));
-    }
+    document
+      .getElementById("addToCart")
+      .addEventListener("click", this.addToCart.bind(this));
   }
 
   addToCart() {
-    // setLocalStorage("so-cart", this.product);
- // Fetch cart from localStorage
-  const cartItems = JSON.parse(localStorage.getItem("so-cart")) || [];
+    // Get current cart items
+    let cartItems = getLocalStorage("so-cart");
+    
+    // If cartItems is not an array, convert it to one
+    if (!Array.isArray(cartItems)) {
+      // If there's a single item, put it in an array
+      if (cartItems && typeof cartItems === "object") {
+        cartItems = [cartItems];
+      } else {
+        // If there's nothing, initialize empty array
+        cartItems = [];
+      }
+    }
+    
+    // Add the new product to the array
+    cartItems.push(this.product);
+    
+    // Save back to localStorage
+    setLocalStorage("so-cart", cartItems);
+  }
 
- // Add product to the cart array
-  cartItems.push(this.product);
-
- // Save updated cart back to localStorage
-  localStorage.setItem("so-cart", JSON.stringify(cartItems));
-
-  alert(`${this.product.Name} has been added to your cart!`);
-}
   renderProductDetails(selector) {
     const element = document.querySelector(selector);
-    element.insertAdjacentHTML("afterBegin", productDetailsTemplate(this.product));
-    
+    element.insertAdjacentHTML(
+      "afterBegin",
+      productDetailsTemplate(this.product)
+    );
   }
 }
