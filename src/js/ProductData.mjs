@@ -1,23 +1,28 @@
 function convertToJson(res) {
-  if (res.ok) {
-    return res.json();
-  } else {
-    throw new Error("Bad Response");
+  if (!res.ok) {
+    throw new Error(`HTTP error! Status: ${res.status}`);
   }
+  return res.json();
 }
 
 export default class ProductData {
   constructor(category) {
     this.category = category;
-    this.path = `../json/${this.category}.json`;
+    this.path = `../public/json/${this.category}.json`;
   }
-  getData() {
-    return fetch(this.path)
-      .then(convertToJson)
-      .then((data) => data);
+
+  async getData() {
+    try {
+      const response = await fetch(this.path);
+      return convertToJson(response);
+    } catch (error) {
+      console.error("Error fetching product data:", error);
+      return []; // Return an empty array to avoid breaking the app
+    }
   }
+
   async findProductById(id) {
     const products = await this.getData();
-    return products.find((item) => item.Id === id);
+    return products.find((item) => item.id === id); // Ensure your JSON keys match
   }
 }

@@ -1,43 +1,31 @@
-// Import ProductData to fetch product data
-import ProductData from './ProductData.mjs';
+import { renderListWithTemplate } from "./utils.mjs";
+
+function productCardTemplate(product) {
+  return `
+    <li class="product-card">
+      <a href="product_pages/?product=${product.Id}">
+        <img src="${product.Image}" alt="Image of ${product.Name}">
+        <h2 class="card__brand">${product.Brand.Name || 'Unknown Brand'}</h2>
+        <h3 class="card__name">${product.Name}</h3>
+        <p class="product-card__price">$${product.FinalPrice.toFixed(2)}</p>
+      </a>
+    </li>
+  `;
+}
 
 export default class ProductList {
   constructor(category, dataSource, listElement) {
-    this.category = category; // Product category (e.g., "tents")
-    this.dataSource = dataSource; // The data source (e.g., instance of ProductData)
-    this.listElement = listElement; // The HTML element to render the product list
+    this.category = category;
+    this.dataSource = dataSource;
+    this.listElement = listElement;
   }
 
-  // The init method to initialize the product list
   async init() {
-    try {
-      // Fetch product data from the data source
-      const productList = await this.dataSource.getData();
-      // Render the product list
-      this.render(productList);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    }
+    const list = await this.dataSource.getData();
+    this.renderList(list);
   }
 
-  // Render the product list into the HTML element
-  render(products) {
-    // Map each product to its HTML card
-    const productCards = products.map(product => this.createProductCard(product));
-    
-    // Insert the product cards into the listElement
-    this.listElement.innerHTML = productCards.join('');
-  }
-
-  // Create an HTML card for each product
-  createProductCard(product) {
-    return `
-      <div class="product-card">
-        <img src="${product.Image}" alt="${product.Name}" class="product-card__image"/>
-        <h3 class="product-card__name">${product.Name}</h3>
-        <p class="product-card__price">$${product.FinalPrice}</p>
-        <button class="add-to-cart-btn" data-id="${product.Id}">Add to Cart</button>
-      </div>
-    `;
+  renderList(products) {
+    renderListWithTemplate(productCardTemplate, this.listElement, products, "afterbegin", true);
   }
 }

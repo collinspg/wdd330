@@ -7,6 +7,7 @@ const productListElement = document.querySelector('.product-list');
 
 // Create a new ProductData instance, passing the category for the JSON file
 const dataSource = new ProductData('tents');
+// Target element in HTML
 
 // Create an instance of ProductList, passing the necessary arguments
 const productList = new ProductList('tents', dataSource, productListElement);
