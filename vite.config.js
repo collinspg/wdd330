@@ -3,9 +3,13 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   root: "src/",
+<<<<<<< HEAD
   base: "/",
 
 
+=======
+  base: "./", 
+>>>>>>> 7216d50 (include a base path configuration in vite.config)
   build: {
     outDir: "../dist",
     rollupOptions: {
