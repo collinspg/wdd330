@@ -1,4 +1,6 @@
 import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { loadHeaderFooter } from "./utils.mjs"; 
+loadHeaderFooter();
 
 // Function to render the cart items or show an empty cart message
 function renderCartContents() {
