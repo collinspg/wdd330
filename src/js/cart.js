@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 //used to populate cart/index.html data
 import { loadHeaderFooter, renderCartCount } from "./utils.mjs";
 import ShoppingCart from "./ShoppingCart.mjs";
+=======
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { loadHeaderFooter } from "./utils.mjs"; 
+loadHeaderFooter();
+>>>>>>> ad47830 (team activity without strech done)
 
 const cart = new ShoppingCart("cart", ".product-list"); //Create new instance of Shopping Cart
 cart.renderCartContents(); //pull cart contents from local storage
