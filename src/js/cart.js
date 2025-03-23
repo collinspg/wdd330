@@ -1,28 +1,17 @@
-import { getLocalStorage } from "./utils.mjs";
+//used to populate cart/index.html data
+import { loadHeaderFooter, renderCartCount } from "./utils.mjs";
+import ShoppingCart from "./ShoppingCart.mjs";
 
-function renderCartContents() {
-  const cartItems = getLocalStorage("so-cart");
-  const htmlItems = cartItems.map((item) => cartItemTemplate(item));
-  document.querySelector(".product-list").innerHTML = htmlItems.join("");
-}
-
-function cartItemTemplate(item) {
-  const newItem = `<li class="cart-card divider">
-  <a href="#" class="cart-card__image">
-    <img
-      src="${item.Image}"
-      alt="${item.Name}"
-    />
-  </a>
-  <a href="#">
-    <h2 class="card__name">${item.Name}</h2>
-  </a>
-  <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <p class="cart-card__quantity">qty: 1</p>
-  <p class="cart-card__price">$${item.FinalPrice}</p>
-</li>`;
-
-  return newItem;
-}
-
-renderCartContents();
+const cart = new ShoppingCart("cart", ".product-list"); //Create new instance of Shopping Cart
+cart.renderCartContents(); //pull cart contents from local storage
+loadHeaderFooter(); //load the header/footer templates
+cart.calculateTotal(); //
+//EVENT LISTENER FOR CART DELETE BUTTONS
+const deleteButtons = document.querySelectorAll(".close-btn"); //Grab all class .close-btn
+deleteButtons.forEach((button) => {
+  //create an event listener for each
+  button.addEventListener("click", function () {
+    cart.removeItem(button.getAttribute("data-id")); //call the cart method removeItem.  passing the data-id of the item to delete
+    renderCartCount(); //recall the renderCartCount to update backpack icon
+  });
+});
