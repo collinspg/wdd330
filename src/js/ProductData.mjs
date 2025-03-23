@@ -1,3 +1,5 @@
+// Import the fetch function from the node-fetch module
+// Import the convertToJson function from the utils module
 function convertToJson(res) {
     if (res.ok) {
       return res.json();
