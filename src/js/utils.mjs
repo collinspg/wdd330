@@ -1,4 +1,4 @@
-// wrapper for querySelector...returns matching element
+// Import this file in your modules to use the utility functions
 export function qs(selector, parent = document) {
   return parent.querySelector(selector);
 }
@@ -11,7 +11,7 @@ export function getLocalStorage(key) {
 export function setLocalStorage(key, data) {
   localStorage.setItem(key, JSON.stringify(data));
 }
-// set a listener for both touchend and click
+// remove data from local storage
 export function setClick(selector, callback) {
   qs(selector).addEventListener("touchend", (event) => {
     event.preventDefault();
@@ -27,7 +27,7 @@ export function getParam(param) {
   return product;
 }
 
-// Stretch Activity Week 2
+// Function to render a list of items using a template
 export function renderListWithTemplate(
   templateFn,
   parentElement,
@@ -35,7 +35,7 @@ export function renderListWithTemplate(
   position,
   clear = false,
 ) {
-  // Clear the parent element if needed
+  // If the list is empty, render the empty template
   if (clear) {
     parentElement.innerHTML = "";
   }
@@ -115,7 +115,7 @@ export function cartSuperscript() {
   const numCartItems = cartItems.reduce((acc, item) => acc + item.Qtd, 0);
   // console.log(cartItems);
 
-  //hide superscript if no items in cart from hide css class, else show num of items
+ // If there are no items in the cart, hide the count
   if (numCartItems === 0) {
     cartCountElement.classList.add("hide");
   } else {
