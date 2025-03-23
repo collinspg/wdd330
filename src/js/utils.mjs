@@ -115,7 +115,7 @@ export function cartSuperscript() {
   const numCartItems = cartItems.reduce((acc, item) => acc + item.Qtd, 0);
   // console.log(cartItems);
 
-  //hide superscript if no items in cart from hide css class, else show num of items
+ // If there are no items in the cart, hide the count
   if (numCartItems === 0) {
     cartCountElement.classList.add("hide");
   } else {

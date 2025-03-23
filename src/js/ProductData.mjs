@@ -7,7 +7,8 @@ function convertToJson(res) {
       throw new Error("Bad Response");
     }
   }
-  
+  // Export the ProductData class
+// The ProductData class will be used to fetch product data from the JSON file
   export default class ProductData {
     constructor(category) {
       this.category = category;

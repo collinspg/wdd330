@@ -30,7 +30,7 @@ export default class ProductDetails {
     productDetailsTemplate(this.product);
   }
 }
-
+// This function will render the product details on the page
 function productDetailsTemplate(product) {
   document.querySelector('h2').textContent = product.Brand.Name;
   document.querySelector('h3').textContent = product.NameWithoutBrand;
