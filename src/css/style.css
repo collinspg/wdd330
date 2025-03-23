@@ -98,6 +98,32 @@ button {
   position: relative;
   text-align: center;
 }
+/* Cart counter styles */
+.visible {
+  display: flex;
+  visibility: visible;
+}
+.hidden {
+  display: none;
+  visibility: hidden;
+}
+#cart-count {
+  position: absolute;
+  top: 10%;
+  right: 0%;
+  background-color: #e5aa72;
+  color: #4e2286;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6em;
+  /* making w/h smaller than the numbers so the padding controls the size */
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
 .cart svg {
   width: 25px;
 }
@@ -163,24 +189,15 @@ button {
   align-items: center;
   position: relative;
 }
-.cart-card__remove {
+.close-btn {
   position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  font-size: 1rem;
+  right: 0;
+  top: 0;
+  padding: 2px;
+  font-size: 10px;
   font-weight: bold;
-  color: white;
-  cursor: pointer;
-  background: var(--secondary-color);
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.cart-card__remove:hover {
-  background: var(--primary-color);
+  border: 1px solid black;
+  background: black;
   color: white;
 }
 .cart-card__image {
@@ -201,50 +218,40 @@ button {
 .cart-card__quantity {
   grid-row: 1;
   grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .cart-card__price {
   grid-row: 2;
   grid-column: 3;
 }
-/* Cart totals styling */
-.hide {
-  display: none;
-}
-.cart-footer {
-  padding: 1em;
-  border-top: 1px solid var(--light-grey);
-  margin-top: 1em;
-}
-.cart-total {
-  font-size: var(--large-font);
-  font-weight: bold;
-  text-align: right;
-}
-/* End cart totals styling */
 
-/* Discount styling */
-.product-card__discount {
-  display: flex;
-  align-items: center;
-  margin-top: -0.5em;
-  margin-bottom: 0.5em;
-}
-
-.product-card__original-price {
-  text-decoration: line-through;
-  color: var(--light-grey);
-  margin-right: 0.5em;
-}
-
-.product-card__discount-badge {
-  background-color: red;
+/* Quantity button styles */
+.quantity-decrease,
+.quantity-increase {
+  background-color: var(--secondary-color);
   color: white;
-  padding: 0.2em 0.6em;
-  border-radius: 0.25em;
-  font-weight: bold;
-  font-size: var(--small-font);
+  border: none;
+  border-radius: 3px;
+  font-size: 14px;
+  padding: 2px 6px;
+  margin: 0 5px;
+  cursor: pointer;
+  display: inline-block;
 }
-/* End discount styling */
+
+.quantity-decrease:hover,
+.quantity-increase:hover {
+  background-color: var(--primary-color);
+}
+
+/* Style for quantity text */
+.cart-card__quantity span {
+  display: inline-block;
+  min-width: 50px;
+  text-align: center;
+}
 
 @media screen and (min-width: 500px) {
   body {
@@ -258,8 +265,83 @@ button {
     font-size: inherit;
     grid-template-columns: 150px auto 15%;
   }
+  
+  /* Adjust quantity controls for larger screens */
+  .cart-card__quantity {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  
+  .quantity-decrease,
+  .quantity-increase {
+    font-size: 16px;
+    padding: 3px 8px;
+  }
+  
+  .cart-card__quantity span {
+    min-width: 60px;
+  }
 }
 footer {
   font-size: var(--small-font);
   padding: 1em;
+}
+/* product grid styles */
+.product-grid {
+  list-style-type: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+  color: var(--dark-grey);
+  padding-left: 0;
+}
+.product-grid > li {
+  width: 150px;
+  /* border: 1px solid var(--light-grey); */
+  padding: 0.5em;
+  margin: 1em;
+}
+.product-grid h2 {
+  margin: 0;
+  font-size: 1.2em;
+}
+.product-grid a {
+  text-decoration: none;
+}
+.product-grid a:link,
+.product-grid a:visited {
+  color: var(--dark-grey);
+}
+.product-grid a:hover {
+  text-decoration: underline;
+}
+/* Style discount */
+span.product-original {
+  text-decoration: line-through;
+  color: #303030;
+}
+span.product-final {
+  color: green;
+}
+span.product-percentage {
+  font-style: italic;
+  font-size: 0.9rem;
+  color: red;
+}
+/* style breadcrumbs */
+.breadcrumbs {
+  text-transform: capitalize;
+  padding-left: 1rem;
+  font-weight: 700;
+  padding-top: 0.5rem;
+}
+
+/* Empty cart styling */
+.empty-cart {
+  text-align: center;
+  padding: 2em;
+  font-size: 1.2em;
+  color: var(--dark-grey);
 }
