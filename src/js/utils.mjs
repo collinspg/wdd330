@@ -1,32 +1,21 @@
+// utils.mjs - Utility Functions
 
-// Import this file in your modules to use the utility functions
-=======
-// Wrapper for querySelector...returns matching element
-
+// Wrapper for querySelector
 export function qs(selector, parent = document) {
   return parent.querySelector(selector);
 }
 
-// Retrieve data from localstorage
+// LocalStorage functions
 export function getLocalStorage(key) {
   return JSON.parse(localStorage.getItem(key));
 }
 
 export function setLocalStorage(key, data) {
-  if (!key || !data) {
-    // console.error("setLocalStorage: Invalid key or data", { key, data });
-    return;
-  }
+  if (!key || !data) return;
   localStorage.setItem(key, JSON.stringify(data));
-
 }
 
-// remove data from local storage
-=======
-
-
-// Set a listener for both touchend and click
-
+// Event listeners
 export function setClick(selector, callback) {
   qs(selector).addEventListener("touchend", (event) => {
     event.preventDefault();
@@ -35,221 +24,68 @@ export function setClick(selector, callback) {
   qs(selector).addEventListener("click", callback);
 }
 
-
+// URL parameters
 export function getParam(param) {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  const product = urlParams.get(param);
-  return product;
+  return new URLSearchParams(window.location.search).get(param);
 }
 
-// Function to render a list of items using a template
-export function renderListWithTemplate(
-  templateFn,
-  parentElement,
-  list,
-  position,
-  clear = false,
-) {
-  // If the list is empty, render the empty template
-  if (clear) {
-    parentElement.innerHTML = "";
-  }
-  if (list.length === 0) {
-    parentElement.insertAdjacentHTML(position, templateFn());
-  } else {
-    position = "afterbegin";
-    const htmlStrings = list.map(templateFn);
-    parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
-  }
-}
-
-export function renderWithTemplate(templateFn, parentElement, data, callback) {
-  parentElement.insertAdjacentHTML("afterbegin", templateFn);
-  if (callback) {
-    callback(data);
-  }
-}
-
-async function loadTemplate(path) {
-  const res = await fetch(path);
-  const template = await res.text();
-  return template;
-}
-
-// Function to dynamically load the header and footer into page
-export async function loadHeaderFooter() {
-  const headerTemplate = await loadTemplate("/partials/header.html");
-  const footerTemplate = await loadTemplate("/partials/footer.html");
-
-  const header = document.querySelector("#header");
-  const footer = document.querySelector("#footer");
-
-  renderWithTemplate(headerTemplate, header);
-  renderWithTemplate(footerTemplate, footer);
-
-  searchProducts();
-
-  // Load cartSuperscript
-  cartSuperscript();
-}
-
-function searchProducts() {
-  const sButton = document.getElementById("searchButton");
-  sButton.addEventListener("click", function (e) {
-    const searchTerm = document.getElementById("searchInput").value;
-
-    performSearch(searchTerm);
-  });
-}
-
-export function performSearch(term) {
-  console.log("Performing search for:", term);
-
-  // Create the URL with the search term as a query parameter
-  const searchParams = new URLSearchParams();
-  searchParams.append("category", term);
-
-  // Get the current URL without the query string
-  const baseUrl = `${window.location.origin}/`;
-  console.log("Base URL:", baseUrl);
-
-  // Construct the full URL
-  const newUrl = `product-listing/index.html?${searchParams.toString()}`;
-  console.log("New URL:", newUrl);
-
-  // Navigate to the new URL
-  window.location.href = baseUrl + newUrl;
-}
-
-//add superscript to cart icon
-export function cartSuperscript() {
-  const cartCountElement = document.querySelector(".cart .cart-superscript");
-
-  // Get number of items in cart
-  const cartItems = getLocalStorage("so-cart") || [];
-  const numCartItems = cartItems.reduce((acc, item) => acc + item.Qtd, 0);
-  // console.log(cartItems);
-
- // If there are no items in the cart, hide the count
-  if (numCartItems === 0) {
-    cartCountElement.classList.add("hide");
-  } else {
-    cartCountElement.classList.remove("hide");
-    cartCountElement.textContent = numCartItems;
-    // Add the 'updated' class to trigger the animation
-    cartCountElement.classList.add("updated");
-  }
-  // Remove the class after the animation ends
-  setTimeout(() => {
-    cartCountElement.classList.remove("updated");
-  }, 300);
-
-// Get URL parameters
-export function getParams(param) {
-  const queryString = window.location.search;
-  const urlParams = new URLSearchParams(queryString);
-  return urlParams.get(param);
-}
-
-// Used by ProductList
+// Template rendering
 export function renderListWithTemplate(templateFn, parentElement, list, position = "afterbegin", clear = false) {
+  if (clear) parentElement.innerHTML = "";
   const htmlStrings = list.map(templateFn);
-  if (clear) {
-    parentElement.innerHTML = "";
-  }
   parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
 }
 
-// Render header/footer with template
-export function renderWithTemplate(templateFn, parentElement) {
-  if (parentElement) {
-    parentElement.innerHTML = templateFn;
-  } else {
-    // console.warn(`Element not found for template insertion.`);
-  }
-}
-
-export async function loadHeaderFooter() {
-  // Detect if we're in `src/` (index.html) or a subdirectory (cart/index.html)
-  const basePath = window.location.pathname.split("/").length > 2 ? ".." : ".";
-
-
-  // Grab header/footer elements
-  const header = document.getElementById("main-header");
-  const footer = document.getElementById("main-footer");
-
-  // Grab the template data using the correct basePath
-  const headerTemplate = await loadTemplate(`${basePath}/partials/header.html`);
-  const footerTemplate = await loadTemplate(`${basePath}/partials/footer.html`);
-
-  // Insert templates into the DOM
-  renderWithTemplate(headerTemplate, header);
-  renderWithTemplate(footerTemplate, footer);
-
-  // Ensure the cart count updates AFTER the header is fully loaded
-  setTimeout(() => {
-    renderCartCount();
-  }, 100);
-}
-
-// Fetch template content
 export async function loadTemplate(path) {
-  try {
-    const response = await fetch(path);
-    if (!response.ok) throw new Error(`Failed to load ${path}`);
-    return await response.text();
-  } catch (error) {
-    // console.error("Error loading template:", error);
-    return "";
-  }
+  const res = await fetch(path);
+  return await res.text();
 }
 
-// FIXED: Cart superscript updates correctly across all pages
-//cart superscript
-export function renderCartCount(){
-  const cartCounter = document.getElementById("cart-count");
-  // Add null check to prevent error
-  if (!cartCounter) return;
+// Header/Footer loading
+export async function loadHeaderFooter() {
+  const basePath = window.location.pathname.split("/").length > 2 ? ".." : ".";
+  const [header, footer] = await Promise.all([
+    loadTemplate(`${basePath}/partials/header.html`),
+    loadTemplate(`${basePath}/partials/footer.html`)
+  ]);
+  document.getElementById("main-header").innerHTML = header;
+  document.getElementById("main-footer").innerHTML = footer;
+  setTimeout(renderCartCount, 100);
+}
+
+// Cart functionality
+export function cartSuperscript() {
+  const cartCountElement = document.querySelector(".cart .cart-superscript");
+  const cartItems = getLocalStorage("so-cart") || [];
+  const numCartItems = cartItems.reduce((acc, item) => acc + (item.Qtd || 1), 0);
   
-  const cartCount = getCartCount();
-  //check if cart has items to toggle visibility
-  if (cartCount > 0){
-    showElement(cartCounter);
+  cartCountElement.classList.toggle("hide", numCartItems === 0);
+  if (numCartItems > 0) {
+    cartCountElement.textContent = numCartItems;
+    cartCountElement.classList.add("updated");
+    setTimeout(() => cartCountElement.classList.remove("updated"), 300);
   }
-  else{
-    hideElement(cartCounter);
-  }
-  //populate the div w/ the count
-  cartCounter.innerText = cartCount;
-}
-//Toggle visibility of the cart depending on if something is in it
-//default is hidden
-export function showElement(element) {
-  element.classList.add("visible");
-  element.classList.remove("hidden");
-}
-export function hideElement(element) {
-  element.classList.add("hidden");
-  element.classList.remove("visible");
-}
-export function getCartCount() {
-  const cart = getLocalStorage("cart");
-  let cartCount = 0;
-  if (cart !== null && cart !== undefined) {
-    cartCount = cart.length;
-  }
-  return cartCount;
 }
 
-//Create Breadcrumbs
-export function createBreadcrumbs(category = "",count = null) {
-  const currentLocation = window.location.pathname;
+// Unified cart functions
+export function renderCartCount() {
+  const cartCounter = document.getElementById("cart-count");
+  if (!cartCounter) return;
+  const count = getLocalStorage("so-cart")?.length || 0;
+  cartCounter.textContent = count;
+  cartCounter.classList.toggle("visible", count > 0);
+}
+
+// Helper functions
+export const showElement = element => element.classList.add("visible");
+export const hideElement = element => element.classList.add("hidden");
+
+// Breadcrumbs
+export function createBreadcrumbs(category = "", count = null) {
   const breadcrumbs = document.querySelector(".breadcrumbs");
-  if (currentLocation.includes("listing")) {
-    breadcrumbs.innerHTML = `${category} -> (${count} items)`;
-  } else if (currentLocation.includes("pages")) {
-    breadcrumbs.innerHTML = `${category}`;
-  }
-
+  if (!breadcrumbs) return;
+  
+  breadcrumbs.textContent = window.location.pathname.includes("listing") 
+    ? `${category} → (${count} items)`
+    : category;
 }
