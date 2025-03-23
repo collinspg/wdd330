@@ -3480,3 +3480,9 @@
     }
   ]
 }
+
+{
+  "scripts": {
+    "build": "vite build --emptyOutDir --logLevel=warn"
+  }
+}
