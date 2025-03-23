@@ -1,4 +1,3 @@
-
 import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 export default class ProductDetails {
@@ -45,7 +44,7 @@ function productDetailsTemplate(product) {
   document.getElementById('productDesc').innerHTML = product.DescriptionHtmlSimple;
 
   document.getElementById('addToCart').dataset.id = product.Id;
-=======
+}
 // This module is responsible for dynamically rendering product details on the product page
 // It feeds data into `product.js`, which then populates the `product_pages/index.html` page with the relevant information.
 // Additionally, it includes an 'Add to Cart' functionality for adding the product to the shopping cart.
@@ -71,7 +70,7 @@ export function generateDiscount(product) {
 // The ProductDetail class handles fetching and displaying detailed product information
 // It dynamically loads the data based on the product ID and the category (tent, backpack, etc.).
 // This class also manages the 'Add to Cart' button functionality.
-export default class ProductDetail {
+export class ProductDetail {
     constructor(productId, dataSource) {
         // Initializes with the product's ID and the source from which product data will be fetched.
         this.productId = productId;
