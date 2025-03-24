@@ -41,21 +41,21 @@ function convertToJson(res) {
     }
   }
 
-}
+
 
 // Exporting ProductData class
-export default class ProductData {
+//export default class ProductData {
   // Fetches and returns all products in a given category.
-  async getData(category) {
-    const response = await fetch(baseURL + `products/search/${category}`);
-    const data = await convertToJson(response); 
-    return data.Result;
-}
+ // async getData(category) {
+   // const response = await fetch(baseURL + `products/search/${category}`);
+   // const data = await convertToJson(response); 
+  //  return data.Result;
+//}
 
   // Fetches and returns details for a specific product by its ID.
-  async findProductById(id) {
-    const products = await fetch(`${baseURL}product/${id}`);
-    const data = await convertToJson(products);
-    return data.Result;
-  }
-}
+ // async findProductById(id) {
+  //  const products = await fetch(`${baseURL}product/${id}`);
+   // const data = await convertToJson(products);
+    //return data.Result;
+ // }
+//}

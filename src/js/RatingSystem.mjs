@@ -67,6 +67,7 @@ export default class RatingSystem {
     });
   }
 
+  // Reset all stars to default state
   resetStars() {
     document.querySelectorAll('.star').forEach(star => {
       star.classList.remove('hover');
