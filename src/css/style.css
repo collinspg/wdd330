@@ -75,33 +75,42 @@ header {
   margin-top: -1.7em;
 }
 
-/* Rating System */
-.rating-system {
-  margin-top: 2rem;
-  padding-top: 1rem;
+/* Rating system styles */
+.rating-container {
+  margin-top: 1em;
+  padding: 0.5em;
+  border: 1px solid var(--light-grey);
+  background-color: #fff;
+  text-align: center;
 }
 
-.star {
+.rating-container span {
+  font-family: var(--font-headline);
+  color: var(--secondary-color);
+}
+
+.rating-container .star {
+  font-size: 2rem;
   cursor: pointer;
-  font-size: 1.8rem;
-  color: #ccc;
   transition: color 0.2s;
-  padding: 0 0.2rem;
+  margin: 0 0.2em;
 }
 
-.star.active {
-  color: #ffd700;
+.rating-container .star:hover,
+.rating-container .star:hover ~ .star {
+  color: var(--primary-color);
 }
 
-.star.hover {
-  color: #ffec8b;
+.product-rating {
+  margin-top: 0.5em;
+  text-align: center;
 }
 
-.average-rating {
-  margin-top: 0.5rem;
-  font-size: 0.9em;
-  color: var(--dark-grey);
+.product-rating span {
+  font-size: 1.2rem;
+  color: var(--secondary-color);
 }
+
 
 /* utility classes */
 .highlight {
@@ -280,58 +289,6 @@ button {
   display: inline-block;
   min-width: 50px;
   text-align: center;
-}
-/* newsletter */
-.newsletter-signup {
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  max-width: 400px;
-  text-align: center;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.newsletter-signup input[type="email"] {
-  padding: 0.5rem;
-  margin: 0.5rem 0;
-  width: 80%;
-  max-width: 300px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-}
-
-.newsletter-signup button {
-  padding: 0.5rem 1rem;
-  background-color: #525b0f;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.newsletter-signup button:hover {
-  background-color: #005c3a;
-}
-
-/* Mobile responsiveness */
-@media (max-width: 600px) {
-  .newsletter-signup {
-    margin: 1rem;
-    padding: 1rem;
-  }
-
-  .newsletter-signup input[type="email"] {
-    width: 100%;
-  }
-
-  .newsletter-signup button {
-    width: 100%;
-    margin-top: 0.5rem;
-  }
 }
 
 @media screen and (min-width: 500px) {

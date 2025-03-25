@@ -1,21 +1,24 @@
-// utils.mjs - Utility Functions
-
-// Wrapper for querySelector
+// Wrapper for querySelector...returns matching element
 export function qs(selector, parent = document) {
   return parent.querySelector(selector);
 }
 
-// LocalStorage functions
+// Retrieve data from localstorage
 export function getLocalStorage(key) {
   return JSON.parse(localStorage.getItem(key));
 }
 
 export function setLocalStorage(key, data) {
-  if (!key || !data) return;
+  if (!key || !data) {
+    // console.error("setLocalStorage: Invalid key or data", { key, data });
+    return;
+  }
   localStorage.setItem(key, JSON.stringify(data));
+
 }
 
-// Event listeners
+
+// Set a listener for both touchend and click
 export function setClick(selector, callback) {
   qs(selector).addEventListener("touchend", (event) => {
     event.preventDefault();
@@ -24,68 +27,110 @@ export function setClick(selector, callback) {
   qs(selector).addEventListener("click", callback);
 }
 
-// URL parameters
-export function getParam(param) {
-  return new URLSearchParams(window.location.search).get(param);
+// Get URL parameters
+export function getParams(param) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  return urlParams.get(param);
 }
 
-// Template rendering
+// Used by ProductList
 export function renderListWithTemplate(templateFn, parentElement, list, position = "afterbegin", clear = false) {
-  if (clear) parentElement.innerHTML = "";
   const htmlStrings = list.map(templateFn);
+  if (clear) {
+    parentElement.innerHTML = "";
+  }
   parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
 }
 
-export async function loadTemplate(path) {
-  const res = await fetch(path);
-  return await res.text();
-}
-
-// Header/Footer loading
-export async function loadHeaderFooter() {
-  const basePath = window.location.pathname.split("/").length > 2 ? ".." : ".";
-  const [header, footer] = await Promise.all([
-    loadTemplate(`${basePath}/partials/header.html`),
-    loadTemplate(`${basePath}/partials/footer.html`)
-  ]);
-  document.getElementById("main-header").innerHTML = header;
-  document.getElementById("main-footer").innerHTML = footer;
-  setTimeout(renderCartCount, 100);
-}
-
-// Cart functionality
-export function cartSuperscript() {
-  const cartCountElement = document.querySelector(".cart .cart-superscript");
-  const cartItems = getLocalStorage("so-cart") || [];
-  const numCartItems = cartItems.reduce((acc, item) => acc + (item.Qtd || 1), 0);
-  
-  cartCountElement.classList.toggle("hide", numCartItems === 0);
-  if (numCartItems > 0) {
-    cartCountElement.textContent = numCartItems;
-    cartCountElement.classList.add("updated");
-    setTimeout(() => cartCountElement.classList.remove("updated"), 300);
+// Render header/footer with template
+export function renderWithTemplate(templateFn, parentElement) {
+  if (parentElement) {
+    parentElement.innerHTML = templateFn;
+  } else {
+    // console.warn(`Element not found for template insertion.`);
   }
 }
 
-// Unified cart functions
-export function renderCartCount() {
-  const cartCounter = document.getElementById("cart-count");
-  if (!cartCounter) return;
-  const count = getLocalStorage("so-cart")?.length || 0;
-  cartCounter.textContent = count;
-  cartCounter.classList.toggle("visible", count > 0);
+export async function loadHeaderFooter() {
+  // Detect if we're in `src/` (index.html) or a subdirectory (cart/index.html)
+  const basePath = window.location.pathname.split("/").length > 2 ? ".." : ".";
+
+
+  // Grab header/footer elements
+  const header = document.getElementById("main-header");
+  const footer = document.getElementById("main-footer");
+
+  // Grab the template data using the correct basePath
+  const headerTemplate = await loadTemplate(`${basePath}/partials/header.html`);
+  const footerTemplate = await loadTemplate(`${basePath}/partials/footer.html`);
+
+  // Insert templates into the DOM
+  renderWithTemplate(headerTemplate, header);
+  renderWithTemplate(footerTemplate, footer);
+
+  // Ensure the cart count updates AFTER the header is fully loaded
+  setTimeout(() => {
+    renderCartCount();
+  }, 100);
 }
 
-// Helper functions
-export const showElement = element => element.classList.add("visible");
-export const hideElement = element => element.classList.add("hidden");
+// Fetch template content
+export async function loadTemplate(path) {
+  try {
+    const response = await fetch(path);
+    if (!response.ok) throw new Error(`Failed to load ${path}`);
+    return await response.text();
+  } catch (error) {
+    // console.error("Error loading template:", error);
+    return "";
+  }
+}
 
-// Breadcrumbs
-export function createBreadcrumbs(category = "", count = null) {
-  const breadcrumbs = document.querySelector(".breadcrumbs");
-  if (!breadcrumbs) return;
+// FIXED: Cart superscript updates correctly across all pages
+//cart superscript
+export function renderCartCount(){
+  const cartCounter = document.getElementById("cart-count");
+  // Add null check to prevent error
+  if (!cartCounter) return;
   
-  breadcrumbs.textContent = window.location.pathname.includes("listing") 
-    ? `${category} → (${count} items)`
-    : category;
+  const cartCount = getCartCount();
+  //check if cart has items to toggle visibility
+  if (cartCount > 0){
+    showElement(cartCounter);
+  }
+  else{
+    hideElement(cartCounter);
+  }
+  //populate the div w/ the count
+  cartCounter.innerText = cartCount;
+}
+//Toggle visibility of the cart depending on if something is in it
+//default is hidden
+export function showElement(element) {
+  element.classList.add("visible");
+  element.classList.remove("hidden");
+}
+export function hideElement(element) {
+  element.classList.add("hidden");
+  element.classList.remove("visible");
+}
+export function getCartCount() {
+  const cart = getLocalStorage("cart");
+  let cartCount = 0;
+  if (cart !== null && cart !== undefined) {
+    cartCount = cart.length;
+  }
+  return cartCount;
+}
+
+//Create Breadcrumbs
+export function createBreadcrumbs(category = "",count = null) {
+  const currentLocation = window.location.pathname;
+  const breadcrumbs = document.querySelector(".breadcrumbs");
+  if (currentLocation.includes("listing")) {
+    breadcrumbs.innerHTML = `${category} -> (${count} items)`;
+  } else if (currentLocation.includes("pages")) {
+    breadcrumbs.innerHTML = `${category}`;
+  }
 }
