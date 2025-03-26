@@ -1,3 +1,4 @@
+// Import: import Modal from "./modal.mjs";
 import { setLocalStorage, getLocalStorage } from "./utils.mjs";
 
 export default class Modal {

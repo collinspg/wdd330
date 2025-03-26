@@ -1,3 +1,4 @@
+// Main entry point for the application
 import ProductList from "./ProductList.mjs";
 import { loadHeaderFooter } from "./utils.mjs";
 import Modal from "./modal.mjs";
