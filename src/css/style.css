@@ -384,7 +384,9 @@ span.product-percentage {
   color: var(--dark-grey);
 }
 
+
 /* Modal styles */
+
 .modal {
   position: fixed;
   top: 0;
