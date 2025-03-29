@@ -1,9 +1,9 @@
-import ProductData from "./ProductData.mjs"; 
+import ExternalServices from "./ExternalServices.mjs"; 
 import ProductDetails from "./ProductDetails.mjs";
 import { loadHeaderFooter, getParams } from "./utils.mjs";
 
 const productId = getParams("product");
-const dataSource = new ProductData("tents");
+const dataSource = new ExternalServices("tents"); // Updated from ProductData to ExternalServices
 
 const product = new ProductDetails(productId, dataSource);
 
@@ -18,7 +18,6 @@ function addRatingSystem() {
   // Find the <main> element where the product details are rendered
   const main = document.querySelector("main");
   if (!main) {
-    console.error("Main element not found");
     return;
   }
 
@@ -37,8 +36,7 @@ function addRatingSystem() {
     const star = document.createElement("span");
     star.className = "star";
     star.dataset.rating = i;
-    // Start with an empty star (☆)
-    star.textContent = "☆";
+    star.textContent = "☆"; // Empty star
 
     // When a star is clicked, update the rating
     star.addEventListener("click", () => {
@@ -68,11 +66,9 @@ function setRating(rating, save = true) {
       star.textContent = "☆"; // Empty star
     }
   });
-  
+
   // Save the rating to localStorage if required
   if (save) {
     localStorage.setItem(`rating-${productId}`, rating);
   }
-  
-  console.log(`Rated: ${rating} stars for product ${productId}`);
 }
