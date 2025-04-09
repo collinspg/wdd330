@@ -637,3 +637,67 @@ span.product-percentage {
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
 }
+
+.comments-container {
+  margin-top: 2em;
+  padding: 1em;
+  border: 1px solid var(--light-grey);
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.comments-container h2 {
+  font-size: 1.5em;
+  color: var(--secondary-color);
+  margin-bottom: 1em;
+}
+
+.comment {
+  border-bottom: 1px solid var(--light-grey);
+  padding: 0.5em 0;
+}
+
+.comment p {
+  margin: 0.5em 0;
+  color: var(--dark-grey);
+}
+
+.comment small {
+  color: var(--tertiary-color);
+  font-size: 0.9em;
+}
+
+#commentForm {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+#commentForm label {
+  font-weight: bold;
+  color: var(--secondary-color);
+}
+
+#commentForm textarea {
+  resize: vertical;
+  min-height: 100px;
+  padding: 0.5em;
+  border: 1px solid var(--light-grey);
+  border-radius: 4px;
+  font-family: var(--font-body);
+}
+
+#commentForm button {
+  align-self: flex-start;
+  padding: 0.5em 1.5em;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#commentForm button:hover {
+  background-color: #6e8420; /* Slightly lighter green */
+}

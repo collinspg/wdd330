@@ -1,74 +1,104 @@
 import ExternalServices from "./ExternalServices.mjs"; 
 import ProductDetails from "./ProductDetails.mjs";
-import { loadHeaderFooter, getParams } from "./utils.mjs";
+import { loadHeaderFooter, getParams, getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 const productId = getParams("product");
-const dataSource = new ExternalServices("tents"); // Updated from ProductData to ExternalServices
+const dataSource = new ExternalServices("tents");
 
 const product = new ProductDetails(productId, dataSource);
 
 // Use an async IIFE to await product initialization
 (async function initPage() {
   await product.init();         // Wait for product details to be rendered
-  loadHeaderFooter();           // Load header and footer after product details are rendered
-  addRatingSystem();            // Now add the rating system
+  loadHeaderFooter();           // Load header and footer
+  addRatingSystem();            // Existing rating system
+  addCommentsSystem();          // New comments system
 })();
 
 function addRatingSystem() {
-  // Find the <main> element where the product details are rendered
   const main = document.querySelector("main");
-  if (!main) {
-    return;
-  }
+  if (!main) return;
 
-  // Create a container for the rating system
   const ratingContainer = document.createElement("div");
   ratingContainer.className = "rating-container";
-
-  // Create a label for the rating system
-  const ratingLabel = document.createElement("span");
-  ratingLabel.textContent = "Rate this product: ";
-  ratingContainer.appendChild(ratingLabel);
-
-  // Create 5 stars for rating
+  ratingContainer.innerHTML = "<span>Rate this product: </span>";
+  
   const maxRating = 5;
   for (let i = 1; i <= maxRating; i++) {
     const star = document.createElement("span");
     star.className = "star";
     star.dataset.rating = i;
-    star.textContent = "☆"; // Empty star
-
-    // When a star is clicked, update the rating
-    star.addEventListener("click", () => {
-      setRating(i);
-    });
-
+    star.textContent = "☆";
+    star.addEventListener("click", () => setRating(i));
     ratingContainer.appendChild(star);
   }
-
-  // Append the rating system to the <main> element
+  
   main.appendChild(ratingContainer);
-
-  // Load any saved rating for this product from localStorage
   const savedRating = localStorage.getItem(`rating-${productId}`);
-  if (savedRating) {
-    setRating(parseInt(savedRating), false);
-  }
+  if (savedRating) setRating(parseInt(savedRating), false);
 }
 
 function setRating(rating, save = true) {
-  // Update all stars based on the selected rating
   const stars = document.querySelectorAll(".star");
   stars.forEach((star) => {
-    if (parseInt(star.dataset.rating) <= rating) {
-      star.textContent = "★"; // Filled star
-    } else {
-      star.textContent = "☆"; // Empty star
+    star.textContent = parseInt(star.dataset.rating) <= rating ? "★" : "☆";
+  });
+  if (save) localStorage.setItem(`rating-${productId}`, rating);
+}
+
+// New Comments System
+function addCommentsSystem() {
+  const main = document.querySelector("main");
+  if (!main) return;
+
+  // Create comments container
+  const commentsContainer = document.createElement("div");
+  commentsContainer.className = "comments-container";
+  
+  commentsContainer.innerHTML = `
+    <h2>Customer Comments</h2>
+    <div id="commentList"></div>
+    <form id="commentForm">
+      <label for="comment">Add a Comment:</label>
+      <textarea id="comment" name="comment" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+  `;
+
+  main.appendChild(commentsContainer);
+  
+  // Render existing comments
+  renderComments();
+
+  // Handle comment submission
+  document.getElementById("commentForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const commentText = document.getElementById("comment").value.trim();
+    if (commentText) {
+      addComment(commentText);
+      e.target.reset();
     }
   });
-
-  // Save the rating to localStorage if required
-  if (save) {
-    localStorage.setItem(`rating-${productId}`, rating);
-  }
 }
+
+function renderComments() {
+  const comments = getLocalStorage("comments")?.[productId] || [];
+  const commentList = document.getElementById("commentList");
+  if (!commentList) return;
+  
+  commentList.innerHTML = comments.map(c => `
+    <div class="comment">
+      <p>${c.text}</p>
+      <small>Posted on ${c.date}</small>
+    </div>
+  `).join("");
+}
+
+function addComment(text) {
+  const comments = getLocalStorage("comments") || {};
+  if (!comments[productId]) comments[productId] = [];
+  comments[productId].push({ text, date: new Date().toLocaleDateString() });
+  setLocalStorage("comments", comments);
+  renderComments();
+}
+
