@@ -18,6 +18,7 @@ const baseURL = import.meta.env.VITE_SERVER_URL
 //   }
 //   return JSON.parse(text);
 // }
+// Converts the response to JSON if the response is okay. Otherwise, throws an error.
 async function convertToJson(res) {
   const json = await res.json();
   if (res.ok) {
