@@ -130,7 +130,8 @@ export function createBreadcrumbs(category = "", count = null) {
   }
 }
 
-// Alert Message for Cart
+// Alert Message for Cart and Checkout
+// Used for checkout and cart pages to alert user of errors
 export function alertMessage(message, scroll = true) {
   removeAllAlerts();
 

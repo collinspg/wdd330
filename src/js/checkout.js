@@ -10,6 +10,8 @@ order.init();
 
 document.querySelector("#zip").addEventListener("blur", order.calculateOrderTotal.bind(order));
 
+// Add event listener to the checkout button
+// This will be triggered when the user clicks the "Checkout" button
 document.querySelector("#checkoutSubmit").addEventListener("click", (e) => {
     e.preventDefault();
     const checkoutForm = document.forms[0];
